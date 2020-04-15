@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import fr.trxyy.alternative.alternative_api.GameEngine;
 import fr.trxyy.alternative.alternative_api.GameVerifier;
@@ -46,8 +47,15 @@ public class Downloader extends Thread {
 		BufferedInputStream bufferedInputStream = null;
 		FileOutputStream fileOutputStream = null;
 		try {
-			URL url_ = new URL(this.url.replace(" ", "%20"));
-			bufferedInputStream = new BufferedInputStream(url_.openStream());
+			URL url = new URL(this.url.replace(" ", "%20"));
+			
+			/* edit by chaun14*/
+			URLConnection urlConnection = url.openConnection();
+			urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
+			bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
+			/* end of edit */
+			
+			
 			fileOutputStream = new FileOutputStream(this.file);
 			
 
