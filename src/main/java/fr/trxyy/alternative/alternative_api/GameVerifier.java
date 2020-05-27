@@ -32,19 +32,26 @@ public class GameVerifier {
 		this.filesList = (List<File>)FileUtils.listFiles(this.engine.getGameFolder().getGameDir(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File file : this.filesList) {
 			
+			if (file.getAbsolutePath().endsWith(engine.getGameLinks().getJsonName())) {
+				continue;
+			}
+			
+			if (file.getAbsolutePath().endsWith("downloads.xml")) {
+				continue;
+			}
+			
 			if (existInDeleteList(file.getAbsolutePath().replace(this.engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
 				FileUtil.deleteSomething(file.getAbsolutePath());
 			}
 			
 			if (!existInAllowedFiles(file.getAbsolutePath().replace(this.engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
 				if (existInIgnoreListFolder(file.getParent().replace(this.engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
-					// existe dans la ignore list des dossiers
+					continue;
 				}
 				else if (existInIgnoreList(file.getAbsolutePath().replace(this.engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
-					// Le fichier existe dans la ignoreList, on ne supprime pas
+					continue;
 				}
 				else {
-					// Sinon on supprime
 					FileUtil.deleteSomething(file.getAbsolutePath());
 				}
 			}
@@ -144,7 +151,6 @@ public class GameVerifier {
 			while ((i = read.readLine()) != null) {
 				String correctName = i.replace('/', File.separatorChar);
 				this.deleteList.add("" + this.engine.getGameFolder().getGameDir() + File.separatorChar + correctName);
-//				Logger.log("Added: " + this.engine.getGameFolder().getGameDir() + File.separatorChar + correctName + " to deleteList.");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -4,6 +4,7 @@ public class GameLinks {
 
 	public String BASE_URL;
 	public String JSON_URL;
+	public String JSON_NAME;
 	public String MAINTENANCE;
 	public String IGNORE_LIST;
 	public String DELETE_LIST;
@@ -16,6 +17,7 @@ public class GameLinks {
 			this.BASE_URL = baseUrl + "/";
 		}
 		this.JSON_URL = baseUrl + jsonName;
+		this.JSON_NAME = jsonName;
 		this.IGNORE_LIST = baseUrl + "ignore.cfg";
 		this.DELETE_LIST = baseUrl + "delete.cfg";
 		this.CUSTOM_FILES_URL = baseUrl + "files/";
@@ -24,6 +26,10 @@ public class GameLinks {
 
 	public String getBaseUrl() {
 		return this.BASE_URL;
+	}
+	
+	public String getJsonName() {
+		return this.JSON_NAME;
 	}
 
 	public String getMaintenanceUrl() {

@@ -1,9 +1,16 @@
 package fr.trxyy.alternative.alternative_api.updater;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +41,9 @@ public class GameUpdater extends Thread {
 
 	public HashMap<String, LauncherFile> files = new HashMap<String, LauncherFile>();
 	private static final String ASSETS_URL = "http://resources.download.minecraft.net/";
+	private static final String HOST = "http://www.google.com";
 	public static MinecraftVersion minecraftVersion;
+	public static MinecraftVersion minecraftLocalVersion;
 	public boolean hasCustomJar = false;
 	public AssetIndex assetsList;
 	public GameEngine engine;
@@ -63,94 +72,155 @@ public class GameUpdater extends Thread {
 
 	@Override
 	public void run() {
-		/** --------------------------------------  */
-		Logger.log("\n\n");
-		Logger.log("=============UPDATING GAME==============");
-		
-		this.setCurrentInfoText("Preparation de la mise a jour.");
-		
-		this.verifier = new GameVerifier(this.engine);
-		Logger.log("Getting ignore/delete list   [Extra Step]");
-		Logger.log("========================================");
-		
-		this.setCurrentInfoText("Recuperation de la ignoreList/deleteList.");
-		
-		this.verifier.getIgnoreList();
-		this.verifier.getDeleteList();
-		Logger.log("Indexing version              [Step 1/5]");
-		Logger.log("========================================");
-		
-		this.setCurrentInfoText("Acquisition de la version Minecraft.");
-		
-		this.indexVersion();
-		Logger.log("Indexing assets               [Step 2/5]");
-		Logger.log("========================================");
-		
-		this.setCurrentInfoText("Acquisition des fichiers de ressources.");
-		
-		this.indexAssets();
-		if (!this.engine.getGameStyle().equals(GameStyle.VANILLA)) {
-			Logger.log("Indexing custom jars        [Extra Step]");
+		/** -------------------------------------- */
+		if (this.isOnline()) {
+			Logger.log("\n\n");
+			Logger.log("=============UPDATING GAME==============");
+
+			this.setCurrentInfoText("Preparation de la mise a jour.");
+
+			this.downloadVersion();
+
+			this.verifier = new GameVerifier(this.engine);
+			Logger.log("Getting ignore/delete list   [Extra Step]");
 			Logger.log("========================================");
-			
-			this.setCurrentInfoText("Acquisition des fichiers perso requis.");
-			
-			GameParser.getFilesToDownload(engine);
-		}
-		Logger.log("Updating assets               [Step 3/5]");
-		Logger.log("========================================");
-		
-		this.setCurrentInfoText("Telechargement des ressources.");
-		
-		this.updateAssets();
-		Logger.log("Updating jars/libraries       [Step 4/5]");
-		Logger.log("========================================");
-		
-		this.setCurrentInfoText("Telechargement des librairies.");
-		
-		this.updateJars();
-		if (!engine.getGameStyle().equals(GameStyle.VANILLA)) {
-			Logger.log("Updating custom jars        [Extra Step]");
+
+			this.setCurrentInfoText("Recuperation de la ignoreList/deleteList.");
+
+			this.verifier.getIgnoreList();
+			this.verifier.getDeleteList();
+			Logger.log("Indexing version              [Step 1/5]");
 			Logger.log("========================================");
-			
-			this.setCurrentInfoText("Telechargement des ressources perso.");
-			
-			this.updateCustomJars();
+
+			this.setCurrentInfoText("Acquisition de la version Minecraft.");
+
+			this.indexVersion();
+			Logger.log("Indexing assets               [Step 2/5]");
+			Logger.log("========================================");
+
+			this.setCurrentInfoText("Acquisition des fichiers de ressources.");
+
+			this.indexAssets();
+			if (!this.engine.getGameStyle().equals(GameStyle.VANILLA)) {
+				Logger.log("Indexing custom jars        [Extra Step]");
+				Logger.log("========================================");
+
+				this.setCurrentInfoText("Acquisition des fichiers perso requis.");
+
+				GameParser.getFilesToDownload(engine);
+			}
+			Logger.log("Updating assets               [Step 3/5]");
+			Logger.log("========================================");
+
+			this.setCurrentInfoText("Telechargement des ressources.");
+
+			this.updateAssets();
+			Logger.log("Updating jars/libraries       [Step 4/5]");
+			Logger.log("========================================");
+
+			this.setCurrentInfoText("Telechargement des librairies.");
+
+			this.updateJars();
+			if (!engine.getGameStyle().equals(GameStyle.VANILLA)) {
+				Logger.log("Updating custom jars        [Extra Step]");
+				Logger.log("========================================");
+
+				this.setCurrentInfoText("Telechargement des ressources perso.");
+
+				this.updateCustomJars();
+			}
+			this.customJarsExecutor.shutdown();
+			try {
+				this.customJarsExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			Logger.log("Cleaning installation         [Step 5/5]");
+			Logger.log("========================================");
+
+			this.setCurrentInfoText("Verification de l'installation.");
+
+			this.verifier.verify();
+			Logger.log("\n\n");
+			Logger.log("========================================");
+			Logger.log("|      Update Finished. Launching.     |");
+			Logger.log("|            Version " + minecraftVersion.getId() + "            |");
+			Logger.log("|          Runtime: " + System.getProperty("java.version") + "          |");
+			Logger.log("|             Build ID:" + generateLot() + "           |");
+			Logger.log("========================================");
+			Logger.log("\n\n");
+			Logger.log("==============GAME OUTPUT===============");
+
+			this.setCurrentInfoText("Telechargement accompli.");
+
+			GameRunner gameRunner = new GameRunner(this.engine, this.session);
+			try {
+				gameRunner.launch();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		this.customJarsExecutor.shutdown();
-		try {
-			this.customJarsExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		Logger.log("Cleaning installation         [Step 5/5]");
-		Logger.log("========================================");
-		
-		this.setCurrentInfoText("Verification de l'installation.");
-		
-		this.verifier.verify();
-		Logger.log("\n\n");
-		Logger.log("========================================");
-		Logger.log("|      Update Finished. Launching.     |");
-		Logger.log("|            Version " + minecraftVersion.getId() + "            |");
-		Logger.log("|          Runtime: " + System.getProperty("java.version") + "          |");
-		Logger.log("|             Build ID:" + generateLot() + "           |");
-		Logger.log("========================================");
-		Logger.log("\n\n");
-		Logger.log("==============GAME OUTPUT===============");
-		
-		
-		this.setCurrentInfoText("Telechargement accompli.");
-		
-		GameRunner forgeGame = new GameRunner(this.engine, this.session);
-		try {
-			Process p = forgeGame.launch();
-//			forgeGame.launchGame();
-		} catch (Exception e) {
-			e.printStackTrace();
+		else { // OFFLINE
+			Logger.log("\n\n");
+			Logger.log("=========UPDATING GAME OFFLINE==========");
+
+			this.setCurrentInfoText("Preparation de la mise a jour.");
+			
+			Logger.log("Indexing local version         [Step 1/1]");
+			Logger.log("========================================");
+			this.indexLocalVersion();
+			
+			if (!this.engine.getGameStyle().equals(GameStyle.VANILLA)) {
+				Logger.log("Indexing custom local jars   [Extra Step]");
+				Logger.log("========================================");
+				this.setCurrentInfoText("Acquisition des fichiers perso en local.");
+				GameParser.getFilesToDownloadOffline(engine);
+			}
+			
+			Logger.log("\n\n");
+			Logger.log("========================================");
+			Logger.log("|      Update Finished. Launching.     |");
+			Logger.log("|            Version " + minecraftLocalVersion.getId() + "            |");
+			Logger.log("|          Runtime: " + System.getProperty("java.version") + "          |");
+			Logger.log("========================================");
+			Logger.log("\n\n");
+			Logger.log("==============GAME OUTPUT===============");
+
+			this.setCurrentInfoText("Telechargement accompli.");
+
+			GameRunner gameRunner = new GameRunner(this.engine, this.session);
+			try {
+				gameRunner.launch();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
-	
+
+	public void downloadVersion() {
+		File theFile = new File(engine.getGameFolder().getCacheDir(), engine.getGameLinks().getJsonName());
+		GameVerifier.addToFileList(theFile.getAbsolutePath().replace(engine.getGameFolder().getCacheDir().getAbsolutePath(), "").replace('/', File.separatorChar));
+		try {
+			URL url = new URL(engine.getGameLinks().getJsonUrl());
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			float totalDataRead = 0;
+			BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
+			FileOutputStream fos = new FileOutputStream(theFile);
+			BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
+			byte[] data = new byte[1024];
+			int i = 0;
+			while ((i = in.read(data, 0, 1024)) >= 0) {
+				totalDataRead = totalDataRead + i;
+				bout.write(data, 0, i);
+			}
+			bout.close();
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+
 	public static String generateLot() {
 		String lot = "";
 		SimpleDateFormat year = new SimpleDateFormat("YY");
@@ -162,7 +232,7 @@ public class GameUpdater extends Thread {
 	}
 
 	public static String constructClasspath(GameEngine engine) {
-		Logger.log("Constructing classpath (new)");
+		Logger.log("Constructing classpath (new, only in version)");
 		String result = "";
 		String separator = System.getProperty("path.separator");
 		for (MinecraftLibrary lib : minecraftVersion.getLibraries()) {
@@ -172,14 +242,16 @@ public class GameUpdater extends Thread {
 		result += engine.getGameFolder().getGameJar().getAbsolutePath();
 		return result;
 	}
-	
+
 	@SuppressWarnings("unlikely-arg-type")
 	public void updateJars() {
 		for (MinecraftLibrary lib : minecraftVersion.getLibraries()) {
 			File libPath = new File(engine.getGameFolder().getLibsDir(), lib.getArtifactPath());
-			
-			GameVerifier.addToFileList(libPath.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "").replace('/', File.separatorChar));
-			
+
+			GameVerifier.addToFileList(
+					libPath.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "")
+							.replace('/', File.separatorChar));
+
 			if (lib.getCompatibilityRules() != null) {
 				for (final CompatibilityRule rule : lib.getCompatibilityRules()) {
 					if (rule.getOs() != null && rule.getAction() != null) {
@@ -204,13 +276,15 @@ public class GameUpdater extends Thread {
 
 			if (!lib.isSkipped()) {
 				if (lib.getDownloads().getArtifact() != null) {
-					final Downloader downloadTask = new Downloader(libPath, lib.getDownloads().getArtifact().getUrl().toString(), lib.getDownloads().getArtifact().getSha1(), engine);
+					final Downloader downloadTask = new Downloader(libPath,
+							lib.getDownloads().getArtifact().getUrl().toString(),
+							lib.getDownloads().getArtifact().getSha1(), engine);
 					if (downloadTask.requireUpdate()) {
-						if (!verifier.existInDeleteList(libPath.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
+						if (!verifier.existInDeleteList(libPath.getAbsolutePath()
+								.replace(engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
 							this.filesToDownload++;
 							this.jarsExecutor.submit(downloadTask);
-						}
-						else {
+						} else {
 						}
 					}
 				}
@@ -219,17 +293,20 @@ public class GameUpdater extends Thread {
 					for (final String osName : lib.getNatives().values()) {
 						String realOsName = osName.replace("${arch}", Arch.CURRENT.getBit());
 						if (lib.getDownloads().getClassifiers().get(realOsName) != null) {
-							final File nativePath = new File(engine.getGameFolder().getNativesCacheDir(), lib.getArtifactNatives(realOsName));
-							GameVerifier.addToFileList(nativePath.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "").replace('/', File.separatorChar));
+							final File nativePath = new File(engine.getGameFolder().getNativesCacheDir(),
+									lib.getArtifactNatives(realOsName));
+							GameVerifier.addToFileList(nativePath.getAbsolutePath()
+									.replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "")
+									.replace('/', File.separatorChar));
 							final Downloader downloadTask8 = new Downloader(nativePath,
 									lib.getDownloads().getClassifiers().get(realOsName).getUrl().toString(),
 									lib.getDownloads().getClassifiers().get(realOsName).getSha1(), engine);
 							if (downloadTask8.requireUpdate()) {
-								if (!verifier.existInDeleteList(nativePath.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
+								if (!verifier.existInDeleteList(nativePath.getAbsolutePath()
+										.replace(engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
 									this.filesToDownload++;
 									this.jarsExecutor.submit(downloadTask8);
-								}
-								else {
+								} else {
 								}
 							}
 						}
@@ -240,8 +317,9 @@ public class GameUpdater extends Thread {
 		final Downloader downloadTask3 = new Downloader(new File(engine.getGameFolder().getBinDir(), "minecraft.jar"),
 				minecraftVersion.getDownloads().getClient().getUrl().toString(),
 				minecraftVersion.getDownloads().getClient().getSha1(), engine);
-		GameVerifier.addToFileList(new File(engine.getGameFolder().getBinDir(), "minecraft.jar").getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "").replace('/', File.separatorChar));
-		
+		GameVerifier.addToFileList(new File(engine.getGameFolder().getBinDir(), "minecraft.jar").getAbsolutePath()
+				.replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "").replace('/', File.separatorChar));
+
 		if (downloadTask3.requireUpdate()) {
 			if (!this.hasCustomJar) {
 				this.jarsExecutor.submit(downloadTask3);
@@ -276,9 +354,11 @@ public class GameUpdater extends Thread {
 			AssetObject asset = (AssetObject) objects.get(assetKey);
 			File mc = getAssetInMcFolder(asset.getHash());
 			File local = getAsset(asset.getHash());
-			
-			GameVerifier.addToFileList(local.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "").replace('/', File.separatorChar));
-			
+
+			GameVerifier.addToFileList(
+					local.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "")
+							.replace('/', File.separatorChar));
+
 			local.getParentFile().mkdirs();
 			if ((!local.exists()) || (!FileUtil.matchSHA1(local, asset.getHash()))) {
 				if ((!local.exists()) && (mc.exists()) && (FileUtil.matchSHA1(mc, asset.getHash()))) {
@@ -299,9 +379,10 @@ public class GameUpdater extends Thread {
 		File indexes = new File(engine.getGameFolder().getAssetsDir(), "indexes");
 		indexes.mkdirs();
 		File index = new File(indexes, minecraftVersion.getAssets() + ".json");
-		
-		GameVerifier.addToFileList(index.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "").replace('/', File.separatorChar));
-		
+
+		GameVerifier.addToFileList(index.getAbsolutePath()
+				.replace(engine.getGameFolder().getGameDir().getAbsolutePath(), "").replace('/', File.separatorChar));
+
 		if (!index.exists()) {
 			try {
 				index.createNewFile();
@@ -331,6 +412,19 @@ public class GameUpdater extends Thread {
 			engine.reg(minecraftVersion);
 		}
 	}
+	
+	public void indexLocalVersion() {
+		File f = new File(engine.getGameFolder().getCacheDir(), engine.getGameLinks().getJsonName());
+		String json = null;
+		try {
+			json = JsonUtil.loadJSON(f.toURL().toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			minecraftLocalVersion = (MinecraftVersion) JsonUtil.getGson().fromJson(json, MinecraftVersion.class);
+			engine.reg(minecraftLocalVersion);
+		}
+	}
 
 	public void indexAssets() {
 		String json = null;
@@ -351,25 +445,26 @@ public class GameUpdater extends Thread {
 	private String toURL(String hash) {
 		return ASSETS_URL + hash.substring(0, 2) + "/" + hash;
 	}
-	
+
 	private void updateCustomJars() {
 		for (String name : this.files.keySet()) {
 			String fileDest = name.replace(engine.getGameLinks().getCustomFilesUrl(), "");
 			String fileName = fileDest;
 			int index = fileName.lastIndexOf("\\");
 			String dirLocation = fileName.substring(index + 1);
-			
+
 			File libPath = new File(engine.getGameFolder().getGameDir() + File.separator + dirLocation);
 			String url = engine.getGameLinks().getCustomFilesUrl() + name;
-			
+
 			final Downloader customDownloadTask = new Downloader(libPath, url, null, engine); // GameParser
-				if (!verifier.existInDeleteList(libPath.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
-					this.customJarsExecutor.submit(customDownloadTask);
-				}
-				else {}
+			if (!verifier.existInDeleteList(
+					libPath.getAbsolutePath().replace(engine.getGameFolder().getGameDir().getAbsolutePath(), ""))) {
+				this.customJarsExecutor.submit(customDownloadTask);
+			} else {
+			}
 		}
 	}
-	
+
 	private File getAsset(String hash) {
 		File assetsDir = this.engine.getGameFolder().getAssetsDir();
 		File mcObjectsDir = new File(assetsDir, "objects");
@@ -395,12 +490,25 @@ public class GameUpdater extends Thread {
 	public void setCurrentInfoText(String name) {
 		this.currentInfoText = name;
 	}
-	
+
 	public String getCurrentFile() {
 		return this.currentFile;
 	}
 
 	public void setCurrentFille(String name) {
 		this.currentFile = name;
+	}
+
+	public boolean isOnline() {
+		try {
+			URL url = new URL(HOST);
+			URLConnection connection = url.openConnection();
+			connection.connect();
+			return true;
+		} catch (MalformedURLException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 }

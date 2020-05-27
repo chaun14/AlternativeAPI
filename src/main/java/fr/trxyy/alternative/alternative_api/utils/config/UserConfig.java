@@ -15,6 +15,7 @@ public class UserConfig {
 
 	public String ram;
 	public String windowsSize;
+	public String autoLogin;
 	public File userConfig;
 
 	public UserConfig(GameEngine engine) {
@@ -22,7 +23,7 @@ public class UserConfig {
 		if (!this.userConfig.exists()) {
 			try {
 				this.userConfig.createNewFile();
-				this.writeConfig("1", "854x480");
+				this.writeConfig("1", "854x480", "false");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -32,11 +33,12 @@ public class UserConfig {
 		engine.reg(getWindowSize(getWindowSize()));
 	}
 
-	public void writeConfig(String s, String s1) {
+	public void writeConfig(String s, String s1, String s2) {
 		try {
 			FileWriter fw = new FileWriter(this.userConfig);
 			fw.write(s + ";");
-			fw.write(s1);
+			fw.write(s1 + ";");
+			fw.write(s2);
 			fw.close();
 		} catch (IOException e) {
 			Logger.log(e.toString());
@@ -50,6 +52,7 @@ public class UserConfig {
 			String[] result = line.split(";");
 			this.ram = result[0];
 			this.windowsSize = result[1];
+			this.autoLogin = result[2];
 			br.close();
 		} catch (IOException e) {
 			Logger.log(e.toString());
@@ -161,6 +164,20 @@ public class UserConfig {
 	public String getWindowSize() {
 		return this.windowsSize;
 	}
+	
+	public String getAutoLoginString() {
+		return this.autoLogin;
+	}
+	
+	public boolean getAutoLogin() {
+		if (this.autoLogin.equals("false")) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
 
 	public String getMemory() {
 		return ram;

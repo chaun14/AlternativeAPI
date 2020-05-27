@@ -7,6 +7,7 @@ import fr.trxyy.alternative.alternative_api.utils.file.GameUtils;
 public class GameFolder {
 
 	public File gameDir;
+	public File cacheDir;
 	public File binDir;
 	public File playDir;
 	public File gameJar;
@@ -21,12 +22,14 @@ public class GameFolder {
 		this.playDir = new File(this.gameDir, "bin" + File.separator + "game");
 		this.gameJar = new File(this.gameDir, "bin" + File.separator + "minecraft.jar");
 		this.libsDir = new File(this.gameDir, "libraries");
+		this.cacheDir = new File(this.gameDir, "cache");
 		this.assetsDir = new File(this.gameDir, "assets");
 		this.nativesDir = new File(this.gameDir, "bin" + File.separator + "natives");
 		this.nativesCacheDir = new File(this.gameDir, "bin" + File.separator + "cache_natives");
 		
 		/** ----- Creating missing folders -------- */
 		this.getLibsDir().mkdirs();
+		this.getCacheDir().mkdirs();
 		this.getAssetsDir().mkdirs();
 		this.getBinDir().mkdirs();
 		this.getGameDir().mkdirs();
@@ -37,6 +40,10 @@ public class GameFolder {
 
 	public File getGameDir() {
 		return this.gameDir;
+	}
+	
+	public File getCacheDir() {
+		return this.cacheDir;
 	}
 
 	public File getBinDir() {

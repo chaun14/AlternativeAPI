@@ -1,8 +1,11 @@
 package fr.trxyy.alternative.alternative_api.build;
 
-import java.io.BufferedReader;
+import java.awt.Desktop;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.ProcessBuilder.Redirect;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,6 +21,7 @@ import fr.trxyy.alternative.alternative_api.GameStyle;
 import fr.trxyy.alternative.alternative_api.account.Session;
 import fr.trxyy.alternative.alternative_api.minecraft.json.Argument;
 import fr.trxyy.alternative.alternative_api.minecraft.json.ArgumentType;
+import fr.trxyy.alternative.alternative_api.utils.HastebinSender;
 import fr.trxyy.alternative.alternative_api.utils.Logger;
 import fr.trxyy.alternative.alternative_api.utils.OperatingSystem;
 import fr.trxyy.alternative.alternative_api.utils.file.FileUtil;
@@ -49,10 +53,13 @@ public class GameRunner {
 		}
 	}
 	  
-    public Process launch() throws Exception
+    public void launch() throws Exception
     {
     	ArrayList<String> commands = getLaunchCommand();
         ProcessBuilder processBuilder = new ProcessBuilder(commands);
+        processBuilder.redirectInput(Redirect.INHERIT);
+        processBuilder.redirectOutput(Redirect.INHERIT);
+        processBuilder.redirectError(Redirect.INHERIT);
 		processBuilder.directory(engine.getGameFolder().getGameDir());
 		processBuilder.redirectErrorStream(true);
 		String cmds = "";
@@ -63,19 +70,34 @@ public class GameRunner {
 		Logger.log("Lancement: " + hideAccessToken(ary));
 		try {
 			Process process = processBuilder.start();
-			String line;
-			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			while ((line = input.readLine()) != null) {
-				if (line.contains("Stopping!")) {
-					Platform.exit();
-					System.exit(0);
+			process.waitFor();
+			int exitVal = process.exitValue();
+			if (exitVal != 0) {
+		        HastebinSender hastebin = new HastebinSender();
+		        String crashUrl = "";
+				try {
+					crashUrl = hastebin.postError(Logger.getLines(), false);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				Logger.log(line);
+				Logger.log("\n\n");
+				Logger.log("========================================");
+				Logger.log("|         Minecraft has crashed.       |");
+				Logger.log("|  Your crash report is available at:  |");
+				Logger.log("|  " + crashUrl + "  |");
+				Logger.log("========================================");
+				this.openLink(crashUrl);
 			}
-			input.close();
-			return process;
 		} catch (IOException e) {
 			throw new Exception("Cannot launch !", e);
+		}
+	}
+    
+	public void openLink(String urlString) {
+		try {
+			Desktop.getDesktop().browse(new URL(urlString).toURI());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
     
