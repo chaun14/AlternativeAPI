@@ -45,7 +45,6 @@ public class GameRunner {
 		this.deleteFakeNatives();
 		if (engine.getStage() != null) {
 			Platform.runLater(new Runnable() {
-				@Override
 				public void run() {
 					engine.getStage().hide();
 				}

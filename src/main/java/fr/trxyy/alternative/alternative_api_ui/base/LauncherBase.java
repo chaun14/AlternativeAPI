@@ -103,7 +103,7 @@ public class LauncherBase {
 	private void displayCopyrights() {
 		Logger.log("========================================");
 		Logger.log("|    Thanks for using AlternativeAPI   |");
-		Logger.log("|         AlternativeAPI 1.2.6         |");
+		Logger.log("|         AlternativeAPI 1.2.61        |");
 		Logger.log("|           Version: RELEASE           |");
 		Logger.log("|           Author(s): Trxyy           |");
 		Logger.log("========================================");

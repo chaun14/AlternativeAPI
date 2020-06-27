@@ -41,7 +41,7 @@ public class GameUpdater extends Thread {
 
 	public HashMap<String, LauncherFile> files = new HashMap<String, LauncherFile>();
 	private static final String ASSETS_URL = "http://resources.download.minecraft.net/";
-	private static final String HOST = "http://www.google.com";
+	private String HOST = "http://www.google.com";
 	public static MinecraftVersion minecraftVersion;
 	public static MinecraftVersion minecraftLocalVersion;
 	public boolean hasCustomJar = false;
@@ -73,6 +73,7 @@ public class GameUpdater extends Thread {
 	@Override
 	public void run() {
 		/** -------------------------------------- */
+		HOST = engine.getGameLinks().getBaseUrl();
 		if (this.isOnline()) {
 			Logger.log("\n\n");
 			Logger.log("=============UPDATING GAME==============");
