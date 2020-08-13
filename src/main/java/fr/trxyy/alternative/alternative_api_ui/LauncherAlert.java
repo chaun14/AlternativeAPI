@@ -10,11 +10,11 @@ import javafx.scene.layout.Priority;
 public class LauncherAlert {
 
 	public LauncherAlert(String text, AlertType type) {
-		Alert alert = new Alert(type);
-		alert.setTitle("Erreur");
-		alert.setHeaderText("Argh! Une erreur est survenue!");
-		alert.setContentText(text);
-		alert.show();
+        Alert alert = new Alert(type);
+        alert.setTitle("Error/Erreur");
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+        alert.showAndWait();
 	}
 
 	public LauncherAlert(String title, String text) {

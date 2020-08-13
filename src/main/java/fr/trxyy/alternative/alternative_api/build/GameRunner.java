@@ -85,7 +85,7 @@ public class GameRunner {
 				Logger.log("|  Your crash report is available at:  |");
 				Logger.log("|  " + crashUrl + "  |");
 				Logger.log("========================================");
-				this.openLink(crashUrl);
+//				this.openLink(crashUrl);
 			}
 		} catch (IOException e) {
 			throw new Exception("Cannot launch !", e);

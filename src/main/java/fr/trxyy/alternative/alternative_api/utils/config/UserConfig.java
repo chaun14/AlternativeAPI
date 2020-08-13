@@ -52,7 +52,19 @@ public class UserConfig {
 			String[] result = line.split(";");
 			this.ram = result[0];
 			this.windowsSize = result[1];
-			this.autoLogin = result[2];
+			try {
+				this.autoLogin = result[2];
+			} catch (Exception e) {
+				if (this.userConfig.exists()) {
+					this.userConfig.delete();
+					this.userConfig.createNewFile();
+					this.writeConfig("1", "854x480", "false");
+				}
+				else {
+					this.userConfig.createNewFile();
+					this.writeConfig("1", "854x480", "false");
+				}
+			}
 			br.close();
 		} catch (IOException e) {
 			Logger.log(e.toString());
