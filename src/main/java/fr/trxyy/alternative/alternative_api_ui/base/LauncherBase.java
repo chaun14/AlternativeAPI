@@ -83,6 +83,7 @@ public class LauncherBase {
 					e.printStackTrace();
 				}
 				if (!result.equals("Ok")) {
+					engine.getGameMaintenance().setAccessBlocked(true);
 					new LauncherAlert("" + result, AlertType.WARNING);
 				} else {
 					stage.show();
@@ -103,7 +104,7 @@ public class LauncherBase {
 	private void displayCopyrights() {
 		Logger.log("========================================");
 		Logger.log("|    Thanks for using AlternativeAPI   |");
-		Logger.log("|         AlternativeAPI 1.2.63        |");
+		Logger.log("|         AlternativeAPI 1.2.64        |");
 		Logger.log("|           Version: RELEASE           |");
 		Logger.log("|           Author(s): Trxyy           |");
 		Logger.log("========================================");

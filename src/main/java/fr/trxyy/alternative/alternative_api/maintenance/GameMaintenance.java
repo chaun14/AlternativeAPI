@@ -11,6 +11,7 @@ public class GameMaintenance {
 
 	public Maintenance maintenance;
 	public GameEngine engine;
+	public boolean block_access = false;
 
 	public GameMaintenance(Maintenance enumMaintenance, GameEngine eng) {
 		this.maintenance = enumMaintenance;
@@ -31,6 +32,18 @@ public class GameMaintenance {
 
 	public Maintenance getMaintenance() {
 		return this.maintenance;
+	}
+
+	public void setMaintenance(Maintenance maintenance_) {
+		this.maintenance = maintenance_;
+	}
+
+	public boolean isAccessBlocked() {
+		return block_access;
+	}
+
+	public void setAccessBlocked(boolean blckd) {
+		this.block_access = blckd;
 	}
 
 }

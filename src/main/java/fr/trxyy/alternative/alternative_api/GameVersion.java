@@ -49,7 +49,8 @@ public enum GameVersion {
 	V_1_15_2("1.15.2", "1.15"),
 	
 	V_1_16("1.16", "1.16"),
-	V_1_16_1("1.16.1", "1.16");
+	V_1_16_1("1.16.1", "1.16"),
+	V_1_16_2("1.16.2", "1.16");
 
 	private String name;
 	private String assetIndex;
