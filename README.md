@@ -32,6 +32,7 @@ libraries/com/google/guava/guava/21.0/guava-21.0.jar
 ```
 bin/game/servers.dat
 bin/game/options.txt
+bin/game/optionsshaders.txt
 bin/game/optionsof.txt
 bin/game/usercache.json
 bin/lastlogin.cfg
