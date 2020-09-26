@@ -9,6 +9,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import fr.trxyy.alternative.alternative_api.GameEngine;
 import fr.trxyy.alternative.alternative_api.maintenance.Maintenance;
 import fr.trxyy.alternative.alternative_api.utils.Logger;
+import fr.trxyy.alternative.alternative_api.utils.OperatingSystem;
 import fr.trxyy.alternative.alternative_api_ui.LauncherAlert;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -26,7 +27,13 @@ public class LauncherBase {
 	final Point dragDelta = new Point();
 
 	public LauncherBase(final Stage stage, Scene scene, StageStyle style, GameEngine engine) {
-
+		
+		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.OSX || OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX || OperatingSystem.getCurrentPlatform() == OperatingSystem.SOLARIS) {
+			Logger.log("Il semblerait que vous utilisiez Mac/Linux.");
+			Logger.log("Si vous rencontrez des difficultés, rendez-vous sur:");
+			Logger.log("https://www.oracle.com/java/technologies/install-javafx-sdk.html");
+		}
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {
@@ -104,7 +111,7 @@ public class LauncherBase {
 	private void displayCopyrights() {
 		Logger.log("========================================");
 		Logger.log("|    Thanks for using AlternativeAPI   |");
-		Logger.log("|         AlternativeAPI 1.2.64        |");
+		Logger.log("|         AlternativeAPI 1.2.65        |");
 		Logger.log("|           Version: RELEASE           |");
 		Logger.log("|           Author(s): Trxyy           |");
 		Logger.log("========================================");

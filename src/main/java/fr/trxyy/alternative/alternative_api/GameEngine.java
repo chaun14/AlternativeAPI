@@ -19,6 +19,7 @@ public class GameEngine {
 	private GameMemory gameMemory;
 	private GameUpdater gameUpdater;
 	private GameArguments gameArguments;
+	private JVMArguments jvmArgs;
 	private GameMaintenance gameMaintenance;
 	private Stage fakeBase;
 	private MinecraftVersion minecraftVersion;
@@ -57,6 +58,10 @@ public class GameEngine {
 		this.gameLinks = links;
 		this.gameForge = null;
 		this.gameConnect = connect;
+	}
+	
+	public void reg(JVMArguments jvArgs) {
+		this.jvmArgs = jvArgs;
 	}
 	
 	public void reg(MinecraftVersion version) {
@@ -166,5 +171,9 @@ public class GameEngine {
 	
 	public MinecraftVersion getMinecraftVersion() {
 		return this.minecraftVersion;
+	}
+
+	public JVMArguments getJVMArguments() {
+		return jvmArgs;
 	}
 }
