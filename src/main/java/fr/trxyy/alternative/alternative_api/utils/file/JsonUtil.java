@@ -13,8 +13,14 @@ import fr.trxyy.alternative.alternative_api.minecraft.json.Argument;
 import fr.trxyy.alternative.alternative_api.minecraft.utils.DateTypeAdapter;
 import fr.trxyy.alternative.alternative_api.minecraft.utils.LowerCaseEnumTypeAdapterFactory;
 
+/**
+ * @author Trxyy
+ */
 public class JsonUtil {
 
+	/**
+	 * @return A good Gson to read Minecraft version json
+	 */
 	public static Gson getGson() {
 		final GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
@@ -25,6 +31,11 @@ public class JsonUtil {
 		return gsonBuilder.create();
 	}
 
+	/**
+	 * @param inUrl The url to load
+	 * @return A String with the Json
+	 * @throws IOException
+	 */
 	public static String loadJSON(String inUrl) throws IOException {
 		URL url = new URL(inUrl);
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));

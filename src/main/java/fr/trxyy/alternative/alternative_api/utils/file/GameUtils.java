@@ -5,8 +5,15 @@ import java.util.ArrayList;
 
 import fr.trxyy.alternative.alternative_api.GameEngine;
 
+/**
+ * @author Trxyy
+ */
 public class GameUtils {
 
+	/**
+	 * @param workDir The working directory
+	 * @return The working directory fro each OS
+	 */
 	public static File getWorkingDirectory(String workDir) {
 		String userHome = System.getProperty("user.home", ".");
 		File workingDirectory;
@@ -28,6 +35,9 @@ public class GameUtils {
 		return workingDirectory;
 	}
 
+	/**
+	 * @return The current Platform
+	 */
 	private static int getPlatform() {
 		String osName = System.getProperty("os.name").toLowerCase();
 		if (osName.contains("linux"))
@@ -45,6 +55,10 @@ public class GameUtils {
 		return 5;
 	}
 
+	/**
+	 * @param engine The GameEngine instance
+	 * @return A String that contains the classpath
+	 */
 	public static String constructClasspath(GameEngine engine) {
 		String result = "";
 		ArrayList<File> libs = list(engine.getGameFolder().getLibsDir());
@@ -56,6 +70,10 @@ public class GameUtils {
 		return result;
 	}
 
+	/**
+	 * @param folder The folder to list
+	 * @return A ArrayList that contains all files listed
+	 */
 	public static ArrayList<File> list(File folder) {
 		ArrayList<File> files = new ArrayList<File>();
 		if (!folder.isDirectory())

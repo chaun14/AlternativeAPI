@@ -12,8 +12,16 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 
+/**
+ * @author Trxyy
+ */
 public class ResourceLocation {
 	
+	/**
+	 * @param engine The GameEngine instance
+	 * @param media The Media as a string
+	 * @return The Media from the string
+	 */
 	public Media getMedia(GameEngine engine, String media) {
 		Media theMedia = null;
 		URL resourceUrl = ResourceLocation.class.getResource(String.valueOf(engine.getLauncherPreferences().getResourceLocation()) + media);
@@ -24,6 +32,11 @@ public class ResourceLocation {
 		return theMedia;
 	}
 
+	/**
+	 * @param engine The GameEngine instance
+	 * @param image The image as a string
+	 * @return The Image from the string
+	 */
 	public Image loadImage(GameEngine engine, String image) {
 		BufferedImage bufferedImage = null;
 		try {
@@ -33,6 +46,10 @@ public class ResourceLocation {
 		return SwingFXUtils.toFXImage(bufferedImage, null);
 	}
 	
+	/**
+	 * @param image The image as a String
+	 * @return A Buffered Image for AWT
+	 */
 	public BufferedImage loadImageAWT(String image) {
 		BufferedImage bufferedImage = null;
 		try {

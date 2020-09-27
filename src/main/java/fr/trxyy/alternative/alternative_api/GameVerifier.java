@@ -15,19 +15,47 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import fr.trxyy.alternative.alternative_api.utils.Logger;
 import fr.trxyy.alternative.alternative_api.utils.file.FileUtil;
 
+/**
+ * @author Trxyy
+ */
 public class GameVerifier {
 	
+	/**
+	 * The GameEngine instance
+	 */
 	public GameEngine engine;
+	/**
+	 * The allowed files list
+	 */
 	public static List<String> allowedFiles = new ArrayList<String>();
+	/**
+	 * The files list (existing)
+	 */
 	public List<File> filesList;
+	/**
+	 * The ignore list (files not to be deleted)
+	 */
 	public List<String> ignoreList = new ArrayList<String>();
+	/**
+	 * The ignore list (entire folder not to be deleted)
+	 */
 	public List<String> ignoreListFolder = new ArrayList<String>();
+	/**
+	 * The delete list (files forced to be deleted)
+	 */
 	public List<String> deleteList = new ArrayList<String>();
 	
+	/**
+	 * The Constructor
+	 * @param gameEngine The instance of GameEngine
+	 */
 	public GameVerifier(GameEngine gameEngine) {
 		this.engine = gameEngine;
 	}
 	
+	/**
+	 * Verify files to ignore/delete
+	 */
 	public void verify() {
 		this.filesList = (List<File>)FileUtils.listFiles(this.engine.getGameFolder().getGameDir(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File file : this.filesList) {
@@ -58,10 +86,19 @@ public class GameVerifier {
 		}
 	}
 	
+	/**
+	 * Add files to addlowed files list
+	 * @param allowed The file to add
+	 */
 	public static void addToFileList(String allowed) {
 		allowedFiles.add(allowed);
 	}
 	
+	/**
+	 * Check if the file exist in the ignore list
+	 * @param search The file path to search
+	 * @return If the file exist
+	 */
 	public boolean existInIgnoreList(String search) {
 		for(String str: this.ignoreList) {
 		    if(str.trim().contains(search))
@@ -70,6 +107,11 @@ public class GameVerifier {
 		return false;
 	}
 	
+	/**
+	 * Check if the file exist in the ignore folder
+	 * @param search The file path to search
+	 * @return If the file exist
+	 */
 	public boolean existInIgnoreListFolder(String search) {
 		String newSearch = search + "\\";
 		for(String str: this.ignoreListFolder) {
@@ -80,6 +122,11 @@ public class GameVerifier {
 		return false;
 	}
 	
+	/**
+	 * Check if the file exist in allowed files
+	 * @param search The file path to search
+	 * @return If the file exist
+	 */
 	public boolean existInAllowedFiles(String search) {
 		for (String str : allowedFiles) {
 			if (str.trim().contains(search))
@@ -88,6 +135,11 @@ public class GameVerifier {
 		return false;
 	}
 	
+	/**
+	 * Check if the file existe in the delete list
+	 * @param search The file path to search
+	 * @return If the file exist
+	 */
 	public boolean existInDeleteList(String search) {
 		for(String str: this.deleteList) {
 		    if(str.trim().contains(search))
@@ -96,6 +148,9 @@ public class GameVerifier {
 		return false;
 	}
 
+	/**
+	 * Getting the ignore list from URL
+	 */
 	public void getIgnoreList() {
 		URL url = null;
 		BufferedReader read = null;
@@ -130,9 +185,10 @@ public class GameVerifier {
 			e.printStackTrace();
 		}
 	}
-	
-	/** ---------------------------------------------------------------------- */
 
+	/**
+	 * Getting the delete list from URL
+	 */
 	public void getDeleteList() {
 		URL url = null;
 		BufferedReader read = null;

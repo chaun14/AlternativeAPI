@@ -16,14 +16,34 @@ import fr.trxyy.alternative.alternative_api.account.AccountType;
 import fr.trxyy.alternative.alternative_api.account.Session;
 import fr.trxyy.alternative.alternative_api.utils.Logger;
 
-
+/**
+ * @author Trxyy
+ */
 public class GameAuth
 {
-  public String USERNAME = "";
-  public String PASSWORD = "";
-  public boolean isAuthed = false;
-  private static Session session = new Session();
+	/**
+	 * The Username/mail
+	 */
+	public String USERNAME = "";
+	/**
+	 * The password
+	 */
+	public String PASSWORD = "";
+	/**
+	 * Is player authed ?
+	 */
+	public boolean isAuthed = false;
+	/**
+	 * The session
+	 */
+	private static Session session = new Session();
   
+	/**
+	 * The Constructor
+	 * @param userName The username/mail
+	 * @param passWord The password
+	 * @param realAuth The account Type (Mojang/Offline)
+	 */
 	public GameAuth(String userName, String passWord, AccountType realAuth) {
 		if (realAuth.equals(AccountType.MOJANG)) {
 			session.setUsername(userName);
@@ -37,12 +57,21 @@ public class GameAuth
 		    session.setUuid(UUID.randomUUID().toString().replace("-", ""));
 		}
 	}
-  
+	
+  /**
+   * Try to login
+   */
 	public void tryLogin() {
 		Logger.log("Try login...");
 		this.connectMinecraft(this.USERNAME, this.PASSWORD);
 	}
   
+	/**
+	 * Connect to minecraft servers using POST request
+	 * @param username The username
+	 * @param password The password
+	 * @return The result
+	 */
 	public String[] connectMinecraft(String username, String password) {
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
@@ -59,7 +88,7 @@ public class GameAuth
 				result.append(line);
 			}
 			Logger.log("Getting result...");
-			return getResult(result.toString(), username);
+			return getResult(result.toString());
 		} catch (Exception exception)
 
 		{
@@ -79,17 +108,23 @@ public class GameAuth
 		return null;
 	}
   
-  public String[] getResult(String r, String username) {
-    r = r.replace("\"", "");
-    r = r.replace("{", "");
-    r = r.replace("}", "");
-    r = r.replace("[", "");
-    r = r.replace("]", "");
+	/**
+	 * A simple function to translate the result from POST request to a lisible
+	 * @param result The result from the POST request
+	 * @param username The username
+	 * @return Results better
+	 */
+  public String[] getResult(String result) {
+    result = result.replace("\"", "");
+    result = result.replace("{", "");
+    result = result.replace("}", "");
+    result = result.replace("[", "");
+    result = result.replace("]", "");
     String accessToken = "";
     String name = "";
     String uuId = "";
     String clientToken = "";
-    String[] split = r.split(",");
+    String[] split = result.split(",");
     for (int i = 0; i < split.length; i++) {
       if (split[i].startsWith("accessToken:")) {
         accessToken = split[i].replace("accessToken:", "");
@@ -102,14 +137,14 @@ public class GameAuth
       } 
     } 
     String[] results = { name, accessToken, clientToken, uuId };
-    String u = insertAt(clientToken, 8, "-");
+   /** String u = insertAt(clientToken, 8, "-");
     String v = insertAt(u, 13, "-");
     String k = insertAt(v, 18, "-");
     String accessTokenModif = insertAt(k, 23, "-");
     String u2 = insertAt(uuId, 8, "-");
     String v2 = insertAt(u2, 13, "-");
     String k2 = insertAt(v2, 18, "-");
-    String uu2 = insertAt(k2, 23, "-");
+    String uu2 = insertAt(k2, 23, "-");*/
     isAuthed = true;
     session.setUsername(results[0]);
     session.setToken(results[1]);
@@ -118,6 +153,7 @@ public class GameAuth
     return results;
   }
   
+  @Deprecated
   public static String insertAt(String target, int position, String insert) {
     int targetLen = target.length();
     if (position < 0 || position > targetLen) {
@@ -139,10 +175,16 @@ public class GameAuth
     return new String(buffer);
   }
 
+  /**
+   * @return If the user is Authed or not
+   */
 	public boolean isLogged() {
 		return isAuthed;
 	}
 
+	/**
+	 * @return The session of the user
+	 */
 	public Session getSession() {
 		return session;
 	}

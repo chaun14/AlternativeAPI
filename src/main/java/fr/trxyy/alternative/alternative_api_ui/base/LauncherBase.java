@@ -22,10 +22,23 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
+/**
+ * @author Trxyy
+ */
 public class LauncherBase {
 
+	/**
+	 * The point where the mouse is clicked
+	 */
 	final Point dragDelta = new Point();
 
+	/**
+	 * The Constructor
+	 * @param stage The primary stage
+	 * @param scene The Scene
+	 * @param style The Stage Style (Transparent etc...
+	 * @param engine The GameEngine instance
+	 */
 	public LauncherBase(final Stage stage, Scene scene, StageStyle style, GameEngine engine) {
 		
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.OSX || OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX || OperatingSystem.getCurrentPlatform() == OperatingSystem.SOLARIS) {
@@ -104,10 +117,18 @@ public class LauncherBase {
 
 	}
 
+	/**
+	 * Set the Icon Image of the window
+	 * @param primaryStage The Stage to set the icon
+	 * @param img The image
+	 */
 	public void setIconImage(Stage primaryStage, Image img) {
 		primaryStage.getIcons().add(img);
 	}
 
+	/**
+	 * Display some copyrights
+	 */
 	private void displayCopyrights() {
 		Logger.log("========================================");
 		Logger.log("|    Thanks for using AlternativeAPI   |");

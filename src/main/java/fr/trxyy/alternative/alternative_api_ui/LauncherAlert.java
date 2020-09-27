@@ -7,8 +7,16 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
+/**
+ * @author Trxyy
+ */
 public class LauncherAlert {
 
+	/**
+	 * The Constructor
+	 * @param text The message to display
+	 * @param type The Type of the Alert
+	 */
 	public LauncherAlert(String text, AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle("Error/Erreur");
@@ -17,6 +25,11 @@ public class LauncherAlert {
         alert.showAndWait();
 	}
 
+	/**
+	 * The Constructor
+	 * @param title The title of the Alert
+	 * @param text The message to display
+	 */
 	public LauncherAlert(String title, String text) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Erreur");

@@ -1,5 +1,8 @@
 package fr.trxyy.alternative.alternative_api;
 
+/**
+ * @author Trxyy
+ */
 public enum GameVersion {
 
 	V_1_7_10("1.7.10", "1.7.10"),
@@ -52,18 +55,35 @@ public enum GameVersion {
 	V_1_16_1("1.16.1", "1.16"),
 	V_1_16_2("1.16.2", "1.16");
 
+	/**
+	 * The version name
+	 */
 	private String name;
+	/**
+	 * The version asset index
+	 */
 	private String assetIndex;
 
+	/**
+	 * The Constructor
+	 * @param name_ The version name
+	 * @param index The version asset index
+	 */
 	GameVersion(String name_, String index) {
 		this.name = name_;
 		this.assetIndex = index;
 	}
 
+	/**
+	 * @return The version name
+	 */
 	public String getVersion() {
 		return this.name;
 	}
 
+	/**
+	 * @return The asset Index
+	 */
 	public String getAssetIndex() {
 		return this.assetIndex;
 	}

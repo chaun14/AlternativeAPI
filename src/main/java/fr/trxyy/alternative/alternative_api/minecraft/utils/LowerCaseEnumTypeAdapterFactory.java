@@ -13,7 +13,13 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
+/**
+ * @author Trxyy
+ */
 public class LowerCaseEnumTypeAdapterFactory implements TypeAdapterFactory {
+	/**
+	 * Create a Type Adapter
+	 */
 	public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
 		final Class<T> rawType = (Class<T>) type.getRawType();
 		if (!rawType.isEnum()) {
@@ -24,6 +30,9 @@ public class LowerCaseEnumTypeAdapterFactory implements TypeAdapterFactory {
 			lowercaseToConstant.put(this.toLowercase(constant), constant);
 		}
 		return new TypeAdapter<T>() {
+			/**
+			 * Write the Json with a value
+			 */
 			@Override
 			public void write(final JsonWriter out, final T value) throws IOException {
 				if (value == null) {
@@ -33,6 +42,9 @@ public class LowerCaseEnumTypeAdapterFactory implements TypeAdapterFactory {
 				}
 			}
 
+			/**
+			 * Read the Json
+			 */
 			@Override
 			public T read(final JsonReader reader) throws IOException {
 				if (reader.peek() == JsonToken.NULL) {
@@ -44,6 +56,10 @@ public class LowerCaseEnumTypeAdapterFactory implements TypeAdapterFactory {
 		};
 	}
 
+	/**
+	 * @param o The Object
+	 * @return The String to lower case
+	 */
 	private String toLowercase(final Object o) {
 		return o.toString().toLowerCase(Locale.US);
 	}

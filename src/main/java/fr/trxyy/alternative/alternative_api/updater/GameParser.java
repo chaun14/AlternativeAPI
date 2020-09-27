@@ -22,8 +22,15 @@ import fr.trxyy.alternative.alternative_api.utils.Logger;
 import fr.trxyy.alternative.alternative_api.utils.file.FileUtil;
 import fr.trxyy.alternative.alternative_api.utils.file.LauncherFile;
 
+/**
+ * @author Trxyy
+ */
 public class GameParser {
 
+	/**
+	 * Get custom files to download
+	 * @param engine The GameEngine instance
+	 */
 	public static void getFilesToDownload(GameEngine engine) {
 		Logger.log("Preparation de la mise a jour.");
 		downloadXMLFile(engine);
@@ -90,6 +97,10 @@ public class GameParser {
 		}
 	}
 	
+	/**
+	 * get files to download (offline)
+	 * @param engine The GameEngine instance
+	 */
 	public static void getFilesToDownloadOffline(GameEngine engine) {
 		Logger.log("Preparation de la mise a jour.");
 		try {
@@ -156,6 +167,10 @@ public class GameParser {
 		}
 	}
 
+	/**
+	 * Download the XML files
+	 * @param engine The GameEngine instance
+	 */
 	public static void downloadXMLFile(GameEngine engine) {
 		File theFile = new File(engine.getGameFolder().getCacheDir(), "downloads.xml");
 		GameVerifier.addToFileList(theFile.getAbsolutePath().replace(engine.getGameFolder().getCacheDir().getAbsolutePath(), "").replace('/', File.separatorChar));

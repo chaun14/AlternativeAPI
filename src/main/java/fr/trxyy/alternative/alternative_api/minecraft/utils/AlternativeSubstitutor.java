@@ -1,16 +1,29 @@
 package fr.trxyy.alternative.alternative_api.minecraft.utils;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
+/**
+ * @author Trxyy
+ */
 public class AlternativeSubstitutor {
+	/**
+	 * The map
+	 */
 	private Map<String, String> map;
-	private static final Pattern p = Pattern.compile("\\$\\{(.+?)\\}");
 
+	/**
+	 * The Constructor
+	 * @param map The map
+	 */
 	public AlternativeSubstitutor(Map<String, String> map) {
 		this.map = map;
 	}
 
+	/**
+	 * Replace the String
+	 * @param str The String
+	 * @return The String remplaced
+	 */
 	public String replace(String str) {
 		StringBuilder sb = new StringBuilder();
 		char[] strArray = str.toCharArray();

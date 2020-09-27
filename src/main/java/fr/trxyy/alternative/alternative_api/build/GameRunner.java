@@ -26,11 +26,25 @@ import fr.trxyy.alternative.alternative_api.utils.file.FileUtil;
 import fr.trxyy.alternative.alternative_api.utils.file.GameUtils;
 import javafx.application.Platform;
 
+/**
+ * @author Trxyy
+ */
 public class GameRunner {
 
+	/**
+	 * The GameEngine instance
+	 */
 	private GameEngine engine;
+	/**
+	 * The Session of the user
+	 */
 	private Session session;
 
+	/**
+	 * The Constructor
+	 * @param gameEngine The GameEngine instance
+	 * @param account The session
+	 */
 	public GameRunner(GameEngine gameEngine, Session account) {
 		this.engine = gameEngine;
 		this.session = account;
@@ -50,6 +64,10 @@ public class GameRunner {
 		}
 	}
 
+	/**
+	 * Launch the game
+	 * @throws Exception
+	 */
     public void launch() throws Exception
     {
     	ArrayList<String> commands = this.getLaunchCommand();
@@ -89,6 +107,10 @@ public class GameRunner {
 		}
 	}
 
+    /**
+     * Open a link
+     * @param urlString The url to open
+     */
 	public void openLink(String urlString) {
 		try {
 			Desktop.getDesktop().browse(new URL(urlString).toURI());
@@ -97,6 +119,10 @@ public class GameRunner {
 		}
 	}
 
+	/**
+	 * Get launch commands as a ArrayList<String>
+	 * @return Launch commands as a ArrayList<String>
+	 */
 	private ArrayList<String> getLaunchCommand() {
 		ArrayList<String> commands = new ArrayList<String>();
 		OperatingSystem os = OperatingSystem.getCurrentPlatform();
@@ -154,7 +180,7 @@ public class GameRunner {
 
 		/** ----- Addons arguments ----- */
 		if (engine.getGameArguments() != null) {
-			commands.addAll(engine.getGameArguments().getArguments());
+			commands.addAll(engine.getGameArguments().getGameArguments());
 		}
 
 		/** ----- Size of window ----- */
@@ -182,6 +208,10 @@ public class GameRunner {
 		return commands;
 	}
 
+	/**
+	 * Get forge arguments (If gameStyle != Vanilla or Vanilla_Plus)
+	 * @return A List<String> of specifics arguments
+	 */
 	private List<String> getForgeArguments() {
 		String specfs = engine.getGameStyle().getSpecificsArguments();
 		specfs = specfs.replace("${launch_target_fml}", GameForge.getLaunchTarget())
@@ -194,6 +224,10 @@ public class GameRunner {
 		return newerList;
 	}
 
+	/**
+	 * Get minecraft launch arguments for old versions of Minecraft
+	 * @return a String[] with multiples arguments
+	 */
 	private String[] getArgumentsOlder() {
 		final Map<String, String> map = new HashMap<String, String>();
 		final StrSubstitutor substitutor = new StrSubstitutor(map);
@@ -215,6 +249,11 @@ public class GameRunner {
 		return split;
 	}
 
+	/**
+	 * Get minecraft launch arguments for new versions of Minecraft
+	 * @param args The arguments from json as a List
+	 * @return a String[] with multiples arguments
+	 */
 	private String[] getArgumentsNewer(List<Argument> args) {
 		final Map<String, String> map = new HashMap<String, String>();
 		final StrSubstitutor substitutor = new StrSubstitutor(map);
@@ -239,6 +278,9 @@ public class GameRunner {
 		return split;
 	}
 
+	/**
+	 * Unpack natives before launching the game
+	 */
 	private void unpackNatives() {
 		try {
 			FileUtil.unpackNatives(engine.getGameFolder().getNativesDir(), engine);
@@ -249,6 +291,9 @@ public class GameRunner {
 		}
 	}
 
+	/**
+	 * Delete old natives
+	 */
 	private void deleteFakeNatives() {
 		try {
 			FileUtil.deleteFakeNatives(engine.getGameFolder().getNativesDir(), engine);
@@ -259,6 +304,11 @@ public class GameRunner {
 		}
 	}
 
+	/**
+	 * Hide the access token inside the console
+	 * @param arguments The Token
+	 * @return A List<String> of the token hidden
+	 */
 	public static List<String> hideAccessToken(String[] arguments) {
         final ArrayList<String> output = new ArrayList<String>();
         for (int i = 0; i < arguments.length; i++) {

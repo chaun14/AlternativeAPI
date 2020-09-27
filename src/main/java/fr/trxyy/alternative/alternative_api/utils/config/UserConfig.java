@@ -11,13 +11,32 @@ import fr.trxyy.alternative.alternative_api.GameMemory;
 import fr.trxyy.alternative.alternative_api.GameSize;
 import fr.trxyy.alternative.alternative_api.utils.Logger;
 
+/**
+ * @author Trxyy
+ */
 public class UserConfig {
 
+	/**
+	 * The ram
+	 */
 	public String ram;
+	/**
+	 * The window Size
+	 */
 	public String windowsSize;
+	/**
+	 * Use Auto Login
+	 */
 	public String autoLogin;
+	/**
+	 * The suer config file
+	 */
 	public File userConfig;
 
+	/**
+	 * The Constructor
+	 * @param engine The GameEngine instance
+	 */
 	public UserConfig(GameEngine engine) {
 		this.userConfig = new File(engine.getGameFolder().getBinDir(), "user_config.cfg");
 		if (!this.userConfig.exists()) {
@@ -33,6 +52,12 @@ public class UserConfig {
 		engine.reg(getWindowSize(getWindowSize()));
 	}
 
+	/**
+	 * Write a config in the file
+	 * @param s The ram
+	 * @param s1 The window size
+	 * @param s2 Auto Login usage
+	 */
 	public void writeConfig(String s, String s1, String s2) {
 		try {
 			FileWriter fw = new FileWriter(this.userConfig);
@@ -45,6 +70,9 @@ public class UserConfig {
 		}
 	}
 
+	/**
+	 * Read the config file
+	 */
 	public void readConfig() {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(this.userConfig));
@@ -71,10 +99,16 @@ public class UserConfig {
 		}
 	}
 
+	/**
+	 * @return The RAM as a String
+	 */
 	public String getRamString() {
 		return this.ram;
 	}
 
+	/**
+	 * @return The Ram as a double
+	 */
 	public double getRam() {
 		if (ram.contentEquals("1.0")) {
 			return 1;
@@ -100,6 +134,10 @@ public class UserConfig {
 		return 1;
 	}
 
+	/**
+	 * @param value The Value as a String
+	 * @return The GameMemory from a String
+	 */
 	public GameMemory convertMemory(String value) {
 		if (value.equals("0.0")) {
 			return GameMemory.DEFAULT;
@@ -127,6 +165,10 @@ public class UserConfig {
 		return GameMemory.DEFAULT;
 	}
 
+	/**
+	 * @param value The value as a double
+	 * @return The Memory from the double
+	 */
 	public GameMemory getMemory(double value) {
 		if (value == 0) {
 			return GameMemory.DEFAULT;
@@ -154,6 +196,10 @@ public class UserConfig {
 		return GameMemory.DEFAULT;
 	}
 
+	/**
+	 * @param value The value as a String
+	 * @return The GameSize from the String
+	 */
 	public GameSize getWindowSize(String value) {
 		if (value.equals("854x480")) {
 			return GameSize.DEFAULT;
@@ -173,14 +219,23 @@ public class UserConfig {
 		return GameSize.DEFAULT;
 	}
 
+	/**
+	 * @return The window size
+	 */
 	public String getWindowSize() {
 		return this.windowsSize;
 	}
 	
+	/**
+	 * @return The auto login as a String
+	 */
 	public String getAutoLoginString() {
 		return this.autoLogin;
 	}
 	
+	/**
+	 * @return The auto login as a boolean
+	 */
 	public boolean getAutoLogin() {
 		if (this.autoLogin.equals("false")) {
 			return false;
@@ -190,7 +245,9 @@ public class UserConfig {
 		}
 	}
 
-
+	/**
+	 * @return The Memory as a String
+	 */
 	public String getMemory() {
 		return ram;
 	}

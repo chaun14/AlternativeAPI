@@ -9,10 +9,23 @@ import java.nio.charset.StandardCharsets;
 
 import javax.net.ssl.HttpsURLConnection;
 
+/**
+ * @author Trxyy
+ */
 public class HastebinSender {
 
+	/**
+	 * The Hastebin url to POST
+	 */
 	public String DEFAULT_URL = "https://hasteb.in/";
 
+	/**
+	 * Post the error to hastebin
+	 * @param text The text to post
+	 * @param raw is Raw ?
+	 * @return A String with the response
+	 * @throws IOException
+	 */
 	public String postError(String text, boolean raw) throws IOException {
 		byte[] postData = text.getBytes(StandardCharsets.UTF_8);
 		int postDataLength = postData.length;

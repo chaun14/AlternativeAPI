@@ -17,12 +17,28 @@ import javax.crypto.spec.PBEParameterSpec;
 
 import fr.trxyy.alternative.alternative_api.GameEngine;
 
+/**
+ * @author Trxyy
+ */
 public class UsernameSaver {
 
+	/**
+	 * The username
+	 */
 	public String userName;
+	/**
+	 * The lastlogin file
+	 */
 	public File lastLogin;
+	/**
+	 * The GameEngine instance
+	 */
 	public GameEngine gameEngine;
 
+	/**
+	 * The Cnstructor
+	 * @param engine The GameEngine instance
+	 */
 	public UsernameSaver(GameEngine engine) {
 		this.gameEngine = engine;
 		this.lastLogin = new File(this.gameEngine.getGameFolder().getBinDir(), "lastlogin.cfg");
@@ -37,6 +53,9 @@ public class UsernameSaver {
 		readUsername();
 	}
 
+	/**
+	 * Read the username from the lastlogin file
+	 */
 	public void readUsername() {
 		try {
 			DataInputStream dis;
@@ -53,6 +72,10 @@ public class UsernameSaver {
 		}
 	}
 
+	/**
+	 * Write the username in the lastlogin file
+	 * @param name The username to write
+	 */
 	public void writeUsername(String name) {
 		try {
 			DataOutputStream dos;
@@ -70,10 +93,19 @@ public class UsernameSaver {
 		}
 	}
 
+	/**
+	 * @return The username
+	 */
 	public String getUsername() {
 		return this.userName;
 	}
 
+	/**
+	 * @param mode The mode
+	 * @param password The password
+	 * @return The Cipher
+	 * @throws Exception
+	 */
 	public Cipher getCipher(int mode, String password) throws Exception {
 		Random random = new Random(43287234L);
 		byte[] salt = new byte[8];
@@ -87,6 +119,9 @@ public class UsernameSaver {
 		return cipher;
 	}
 
+	/**
+	 * @return The GameEngine instance
+	 */
 	public GameEngine getGameEngine() {
 		return gameEngine;
 	}

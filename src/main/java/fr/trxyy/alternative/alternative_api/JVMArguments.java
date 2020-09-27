@@ -3,19 +3,32 @@ package fr.trxyy.alternative.alternative_api;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Trxyy
+ */
 public class JVMArguments {
 
-	private List<String> arguments;
+	/**
+	 * Custom arguments registered inside a List<String>
+	 */
+	private List<String> jvmArguments;
 
-	public JVMArguments(String[] argments) {
-		this.arguments = new ArrayList<String>();
-		for (int i = 0; i < argments.length; i++) {
-			this.arguments.add(argments[i]);
+	/**
+	 * The Constructor
+	 * @param args The Arguments
+	 */
+	public JVMArguments(String[] args) {
+		this.jvmArguments = new ArrayList<String>();
+		for (int i = 0; i < args.length; i++) {
+			this.jvmArguments.add(args[i]);
 		}
 	}
 
+	/**
+	 * @return arguments as a List<String>
+	 */
 	public List<String> getJVMArguments() {
-		return this.arguments;
+		return this.jvmArguments;
 	}
 
 }

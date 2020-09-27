@@ -1,5 +1,8 @@
 package fr.trxyy.alternative.alternative_api;
 
+/**
+ * @author Trxyy
+ */
 public enum GameMemory {
 	DEFAULT("1G"),
 	RAM_2G("2G"),
@@ -12,12 +15,22 @@ public enum GameMemory {
 	RAM_9G("9G"),
 	RAM_10G("10G");
 	
+	/**
+	 * The memory count
+	 */
 	private String count;
 
+	/**
+	 * The Constructor
+	 * @param ram count
+	 */
 	GameMemory(String ramCount) {
 		this.count = ramCount;
 	}
-
+	
+	/**
+	 * @return The RAM count
+	 */
 	public String getCount() {
 		return count;
 	}

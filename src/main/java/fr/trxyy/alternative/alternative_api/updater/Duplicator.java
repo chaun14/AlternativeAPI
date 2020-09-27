@@ -7,15 +7,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * @author Trxyy
+ */
 public class Duplicator extends Thread {
+	/**
+	 * The source file
+	 */
 	private File source;
+	/**
+	 * The destination file
+	 */
 	private File dest;
 
+	/**
+	 * The Constructor
+	 * @param source The source file
+	 * @param dest The destination file
+	 */
 	public Duplicator(File source, File dest) {
 		this.source = source;
 		this.dest = dest;
 	}
 
+	/**
+	 * Run the Thread
+	 */
 	public void run() {
 		try {
 			startCloning();
@@ -24,6 +41,10 @@ public class Duplicator extends Thread {
 		}
 	}
 
+	/**
+	 * Start Cloning the file in question
+	 * @throws IOException
+	 */
 	private void startCloning() throws IOException {
 		InputStream input = null;
 		OutputStream output = null;

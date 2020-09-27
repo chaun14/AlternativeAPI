@@ -22,12 +22,38 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
+/**
+ * @author Trxyy
+ */
 public class IScreen {
+	/**
+	 * The resource location
+	 */
 	private ResourceLocation RESOURCE_LOCATION = new ResourceLocation();
+	/**
+	 * The logo Image
+	 */
 	private ImageView logoImage;
+	/**
+	 * The position X
+	 */
 	private int posX = 0;
+	/**
+	 * The position Y
+	 */
 	private int posY = 0;
 
+	/**
+	 * The Constructor
+	 * @param engine The GameEngine instance
+	 * @param img The image
+	 * @param posX_ The position X
+	 * @param posY_ The position Y
+	 * @param sizeX The size X
+	 * @param sizeY The size Y
+	 * @param root The Pane to add
+	 * @param animate The enum for animate logo or not
+	 */
 	public void drawLogo(GameEngine engine, Image img, int posX_, int posY_, int sizeX, int sizeY, Pane root, Mover animate) {
 		this.logoImage = new ImageView();
 		this.logoImage.setImage(img);
@@ -43,6 +69,9 @@ public class IScreen {
 		}
 	}
 	
+	/**
+	 * To animate the logo
+	 */
 	private void animateLogo() {
 		AnimationTimer animate = new AnimationTimer() {
 			public void handle(long now) {
@@ -56,6 +85,12 @@ public class IScreen {
 		animate.start();
 	}
 
+	/**
+	 * Draw a background image
+	 * @param engine The GameEngine instance
+	 * @param root The pane to add
+	 * @param img The image name
+	 */
 	public void drawBackgroundImage(GameEngine engine, Pane root, String img) {
 		ImageView backgroundImage = new ImageView();
 		backgroundImage.setImage(getResourceLocation().loadImage(engine, img));
@@ -66,6 +101,12 @@ public class IScreen {
 		root.getChildren().add(backgroundImage);
 	}
 
+	/**
+	 * Draw a animated background (mp4)
+	 * @param engine The GameEngine instance
+	 * @param root The Pane to add
+	 * @param media The Media name
+	 */
 	public void drawAnimatedBackground(GameEngine engine, Pane root, String media) {
 		MediaPlayer player = new MediaPlayer(getResourceLocation().getMedia(engine, media));
 		MediaView viewer = new MediaView(player);
@@ -78,6 +119,11 @@ public class IScreen {
 		root.getChildren().add(viewer);
 	}
 
+	/**
+	 * Load a image
+	 * @param image The image name
+	 * @return The image loaded in Swing and converted to FX
+	 */
 	public Image loadImage(String image) {
 		BufferedImage bufferedImage = null;
 		try {
@@ -90,6 +136,10 @@ public class IScreen {
 		return fxImage;
 	}
 
+	/**
+	 * Open a link
+	 * @param urlString The url to open
+	 */
 	public void openLink(String urlString) {
 		try {
 			Desktop.getDesktop().browse(new URL(urlString).toURI());
@@ -98,6 +148,10 @@ public class IScreen {
 		}
 	}
 
+	/**
+	 * Play a sound
+	 * @param sound The sound name
+	 */
 	public void playSound(String sound) {
 		URL resourceUrl = IScreen.class.getResource(getResourceLocation() + sound);
 		Media theMedia = null;
@@ -110,6 +164,9 @@ public class IScreen {
 		mediaPlayer.play();
 	}
 
+	/**
+	 * @return The resource location
+	 */
 	public ResourceLocation getResourceLocation() {
 		return RESOURCE_LOCATION;
 	}

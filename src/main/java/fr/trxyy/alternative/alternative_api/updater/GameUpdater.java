@@ -37,39 +37,99 @@ import fr.trxyy.alternative.alternative_api.utils.file.GameUtils;
 import fr.trxyy.alternative.alternative_api.utils.file.JsonUtil;
 import fr.trxyy.alternative.alternative_api.utils.file.LauncherFile;
 
+/**
+ * @author Trxyy
+ */
 public class GameUpdater extends Thread {
 
+	/**
+	 * The custom files to download in a HashMap
+	 */
 	public HashMap<String, LauncherFile> files = new HashMap<String, LauncherFile>();
+	/**
+	 * The Assets Url
+	 */
 	private static final String ASSETS_URL = "http://resources.download.minecraft.net/";
+	/**
+	 * The Host to check for offline
+	 */
 	private String HOST = "http://www.google.com";
+	/**
+	 * The Minecraft Version from Json
+	 */
 	public static MinecraftVersion minecraftVersion;
+	/**
+	 * The Minecraft Local Version from Json
+	 */
 	public static MinecraftVersion minecraftLocalVersion;
+	/**
+	 * Custom files has a custom jar ?
+	 */
 	public boolean hasCustomJar = false;
+	/**
+	 * The AssetIndex
+	 */
 	public AssetIndex assetsList;
+	/**
+	 * The GameEngine instance
+	 */
 	public GameEngine engine;
+	/**
+	 * The Session of the user
+	 */
 	private Session session;
+	/**
+	 * The GameVerifier instance
+	 */
 	private GameVerifier verifier;
-	/** ASSETS POOL */
+	/**
+	 * The assets Executor
+	 */
 	private ExecutorService assetsExecutor = Executors.newFixedThreadPool(5);
-	/** CUSTOM JARS POOL */
+	/**
+	 * The custom files Executor
+	 */
 	private ExecutorService customJarsExecutor = Executors.newFixedThreadPool(5);
-	/** JARS POOL */
+	/**
+	 * The libraries Executor
+	 */
 	private ExecutorService jarsExecutor = Executors.newFixedThreadPool(5);
-	/** PROGRESS BAR */
+	/**
+	 * The current Info text of the progressbar
+	 */
 	private String currentInfoText = "";
+	/**
+	 * The current file of the progressbar
+	 */
 	private String currentFile = "";
-	/** TRY FAKE PROGRESS */
+	/**
+	 * The downloaded custom files
+	 */
 	public int downloadedFiles = 0;
+	/**
+	 * The custom files to download
+	 */
 	public int filesToDownload = 0;
 
+	/**
+	 * Register some things...
+	 * @param gameEngine The GameEngine instance
+	 */
 	public void reg(GameEngine gameEngine) {
 		this.engine = gameEngine;
 	}
 
+	/**
+	 * Register some things
+	 * @param account The Session of the user
+	 */
 	public void reg(Session account) {
 		this.session = account;
 	}
 
+	/**
+	 * Run the update (Thread)
+	 */
 	@Override
 	public void run() {
 		/** -------------------------------------- */
@@ -198,6 +258,9 @@ public class GameUpdater extends Thread {
 		}
 	}
 
+	/**
+	 * Download Minecraft Json version
+	 */
 	public void downloadVersion() {
 		File theFile = new File(engine.getGameFolder().getCacheDir(), engine.getGameLinks().getJsonName());
 		GameVerifier.addToFileList(theFile.getAbsolutePath().replace(engine.getGameFolder().getCacheDir().getAbsolutePath(), "").replace('/', File.separatorChar));
@@ -222,6 +285,9 @@ public class GameUpdater extends Thread {
 		}
 	}
 
+	/**
+	 * @return A generated Lot Number
+	 */
 	public static String generateLot() {
 		String lot = "";
 		SimpleDateFormat year = new SimpleDateFormat("YY");
@@ -232,6 +298,11 @@ public class GameUpdater extends Thread {
 		return lot;
 	}
 
+	/**
+	 * Construct the classpath
+	 * @param engine The GameEngine instance
+	 * @return The result of the classpath
+	 */
 	public static String constructClasspath(GameEngine engine) {
 		Logger.log("Constructing classpath (new, only in version)");
 		String result = "";
@@ -244,6 +315,9 @@ public class GameUpdater extends Thread {
 		return result;
 	}
 
+	/**
+	 * Update minecraft libraries
+	 */
 	@SuppressWarnings("unlikely-arg-type")
 	public void updateJars() {
 		for (MinecraftLibrary lib : minecraftVersion.getLibraries()) {
@@ -339,6 +413,9 @@ public class GameUpdater extends Thread {
 		}
 	}
 
+	/**
+	 * Update minecraft assets
+	 */
 	public void updateAssets() {
 		String json = null;
 		String assetUrl = minecraftVersion.getAssetIndex().getUrl().toString();
@@ -402,6 +479,9 @@ public class GameUpdater extends Thread {
 
 	}
 
+	/**
+	 * Index Minecraft version json
+	 */
 	public void indexVersion() {
 		String json = null;
 		try {
@@ -414,6 +494,9 @@ public class GameUpdater extends Thread {
 		}
 	}
 	
+	/**
+	 * Index Minecraft local version json
+	 */
 	public void indexLocalVersion() {
 		File f = new File(engine.getGameFolder().getCacheDir(), engine.getGameLinks().getJsonName());
 		String json = null;
@@ -427,6 +510,9 @@ public class GameUpdater extends Thread {
 		}
 	}
 
+	/**
+	 * Index minecraft assets json
+	 */
 	public void indexAssets() {
 		String json = null;
 		String assetUrl = minecraftVersion.getAssetIndex().getUrl().toString();
@@ -439,14 +525,24 @@ public class GameUpdater extends Thread {
 		}
 	}
 
+	/**
+	 * @return The assetsList
+	 */
 	public AssetIndex getAssetsList() {
 		return assetsList;
 	}
 
+	/**
+	 * @param hash The hash
+	 * @return The hash url of the assets
+	 */
 	private String toURL(String hash) {
 		return ASSETS_URL + hash.substring(0, 2) + "/" + hash;
 	}
 
+	/**
+	 * Update custom jars
+	 */
 	private void updateCustomJars() {
 		for (String name : this.files.keySet()) {
 			String fileDest = name.replace(engine.getGameLinks().getCustomFilesUrl(), "");
@@ -466,6 +562,10 @@ public class GameUpdater extends Thread {
 		}
 	}
 
+	/**
+	 * @param hash The hash
+	 * @return The asset File
+	 */
 	private File getAsset(String hash) {
 		File assetsDir = this.engine.getGameFolder().getAssetsDir();
 		File mcObjectsDir = new File(assetsDir, "objects");
@@ -473,6 +573,10 @@ public class GameUpdater extends Thread {
 		return new File(hex, hash);
 	}
 
+	/**
+	 * @param hash The hash
+	 * @return The asset file in minecraft folder
+	 */
 	private File getAssetInMcFolder(String hash) {
 		File minecraftAssetsDir = new File(GameUtils.getWorkingDirectory("minecraft"), "assets");
 		File minecraftObjectsDir = new File(minecraftAssetsDir, "objects");
@@ -480,26 +584,46 @@ public class GameUpdater extends Thread {
 		return new File(hex, hash);
 	}
 
+	/**
+	 * @return The GameEngine instance
+	 */
 	public GameEngine getEngine() {
 		return engine;
 	}
 
+	/**
+	 * @return Get current Info text
+	 */
 	public String getCurrentInfo() {
 		return this.currentInfoText;
 	}
 
+	/**
+	 * Set current info text
+	 * @param name The text of the info
+	 */
 	public void setCurrentInfoText(String name) {
 		this.currentInfoText = name;
 	}
 
+	/**
+	 * @return The current File name
+	 */
 	public String getCurrentFile() {
 		return this.currentFile;
 	}
 
-	public void setCurrentFille(String name) {
+	/**
+	 * Set current File name
+	 * @param name The name
+	 */
+	public void setCurrentFile(String name) {
 		this.currentFile = name;
 	}
 
+	/**
+	 * @return If the host is reachable
+	 */
 	public boolean isOnline() {
 		try {
 			URL url = new URL(HOST);

@@ -27,10 +27,22 @@ import java.util.zip.ZipFile;
 import fr.trxyy.alternative.alternative_api.GameEngine;
 import fr.trxyy.alternative.alternative_api.utils.Logger;
 
+/**
+ * @author Trxyy
+ */
 public class FileUtil {
 
+	/**
+	 * Skip folders in extractions
+	 */
 	public static String skipFoldersInExtraction = "META-INF/";
 
+	/**
+	 * Delete fake natives
+	 * @param targetDir The target directory to delete files
+	 * @param engine The GameEngine instance
+	 * @throws IOException
+	 */
 	public static void deleteFakeNatives(File targetDir, GameEngine engine) throws IOException {
 		File[] listOfFiles = engine.getGameFolder().getNativesDir().listFiles();
 		for (int index = 0; index < listOfFiles.length; index++) {
@@ -48,6 +60,12 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Unpack natives in a designed folder
+	 * @param targetDir The target directory
+	 * @param engine The GameEngine instance
+	 * @throws IOException
+	 */
 	public static void unpackNatives(File targetDir, GameEngine engine) throws IOException {
 		File[] listOfFiles = engine.getGameFolder().getNativesCacheDir().listFiles();
 		for (int index = 0; index < listOfFiles.length; index++) {
@@ -86,6 +104,11 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Force delete on exit
+	 * @param file The file in question
+	 * @throws IOException
+	 */
 	public static void forceDeleteOnExit(File file) throws IOException {
 		if (file.isDirectory()) {
 			deleteDirectoryOnExit(file);
@@ -94,6 +117,11 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Delete a directory on exit
+	 * @param directory The directory in question
+	 * @throws IOException
+	 */
 	private static void deleteDirectoryOnExit(File directory) throws IOException {
 		if (!directory.exists()) {
 			return;
@@ -104,6 +132,12 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * 
+	 * @param file The File
+	 * @return
+	 * @throws IOException
+	 */
 	public static boolean isSymlink(File file) throws IOException {
 		if (file == null) {
 			throw new NullPointerException("File must not be null");
@@ -125,6 +159,11 @@ public class FileUtil {
 		return true;
 	}
 
+	/**
+	 * Clean a directory on exit
+	 * @param directory The directory to clean
+	 * @throws IOException
+	 */
 	private static void cleanDirectoryOnExit(File directory) throws IOException {
 		if (!directory.exists()) {
 			String message = directory + " does not exist";
@@ -151,6 +190,9 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * @return The Charset
+	 */
 	public static Charset getCharset() {
 		try {
 			return Charset.forName("UTF-8");
@@ -159,6 +201,12 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * @param file The file
+	 * @param algorithm The algorithm to use
+	 * @param hashLength The hash lenght
+	 * @return A new String
+	 */
 	public static String getDigest(File file, String algorithm, int hashLength) {
 		DigestInputStream stream = null;
 		try {
@@ -177,6 +225,10 @@ public class FileUtil {
 		return null;
 	}
 
+	/**
+	 * Close
+	 * @param a The Closeable
+	 */
 	private static void close(Closeable a) {
 		try {
 			a.close();
@@ -189,6 +241,11 @@ public class FileUtil {
 		return getDigest(file, "SHA", 40);
 	}
 
+	/**
+	 * @param file The File
+	 * @param sha1 The Sha1
+	 * @return True if the file Md5 Match with the Sha1 String
+	 */
 	public static boolean matchSHA1(final File file, final String sha1) {
 		try {
 			return getSHA(file).equals(sha1);
@@ -198,6 +255,10 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Close silently 
+	 * @param closeable The Closeable
+	 */
 	public static void closeSilently(Closeable closeable) {
 		if (closeable != null) {
 			try {
@@ -207,6 +268,12 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Copy a file from mc directory to our directory
+	 * @param mc The mc folder
+	 * @param local The directory in question
+	 * @throws IOException
+	 */
 	public static void copy(File mc, File local) throws IOException {
 		InputStream input = null;
 		OutputStream output = null;
@@ -224,6 +291,10 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Delete a folder
+	 * @param folder The folder in question
+	 */
 	public static void deleteFolder(File folder) {
 		File[] files = folder.listFiles();
 		if (files != null) { // some JVMs return null for empty dirs
@@ -238,6 +309,10 @@ public class FileUtil {
 		folder.delete();
 	}
 
+	/**
+	 * Delete something
+	 * @param path The pathto the file to delete
+	 */
 	public static void deleteSomething(String path) {
 		Path filePath_1 = Paths.get(path);
 		try {
@@ -251,6 +326,10 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * @param etag The etag
+	 * @return The etag as a String
+	 */
 	public static String getEtag(String etag) {
 		if (etag == null)
 			etag = "-";
@@ -260,6 +339,10 @@ public class FileUtil {
 		return etag;
 	}
 
+	/**
+	 * @param file The file to get the MD5
+	 * @return The MD5 as a String
+	 */
 	public static String getMD5(final File file) {
 		DigestInputStream stream = null;
 		try {
@@ -278,6 +361,10 @@ public class FileUtil {
 		return String.format("%1$032x", new Object[] { new BigInteger(1, stream.getMessageDigest().digest()) });
 	}
 	
+	/**
+	 * @param url The URL to read
+	 * @return The result of the url
+	 */
 	public static String readMD5(String url) {
 		String result = "";
 		try {

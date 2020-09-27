@@ -12,12 +12,30 @@ import fr.trxyy.alternative.alternative_api.GameVerifier;
 import fr.trxyy.alternative.alternative_api.utils.Logger;
 import fr.trxyy.alternative.alternative_api.utils.file.FileUtil;
 
+/**
+ * @author Trxyy
+ */
 public class Downloader extends Thread {
+	/**
+	 * The download url
+	 */
 	private final String url;
+	/**
+	 * The Sha1
+	 */
 	private final String sha1;
+	/**
+	 * The file location
+	 */
 	private final File file;
+	/**
+	 * The gameEngine instance
+	 */
 	private GameEngine engine;
 
+	/**
+	 * Run the Thread
+	 */
 	public void run() {
 		try {
 			download();
@@ -26,6 +44,13 @@ public class Downloader extends Thread {
 		}
 	}
 
+	/**
+	 * The Constructor
+	 * @param file The file
+	 * @param url The Url
+	 * @param sha1 The Sha1
+	 * @param engine_ The gameEngine instance
+	 */
 	public Downloader(File file, String url, String sha1, GameEngine engine_) {
 		this.file = file;
 		this.url = url;
@@ -35,9 +60,13 @@ public class Downloader extends Thread {
 		file.getParentFile().mkdirs();
 	}
 
+	/**
+	 * Download the file ion question
+	 * @throws IOException
+	 */
 	public void download() throws IOException {
 		Logger.log("Acquiring file '" + this.file.getName() + "'");
-		engine.getGameUpdater().setCurrentFille(this.file.getName());
+		engine.getGameUpdater().setCurrentFile(this.file.getName());
 		if (this.file.getAbsolutePath().contains("assets")) {
 			engine.getGameUpdater().setCurrentInfoText("Telechargement d'une ressource.");
 		}
@@ -71,6 +100,9 @@ public class Downloader extends Thread {
 		}
 	}
 
+	/**
+	 * @return If the file require a update
+	 */
 	public boolean requireUpdate() {
 		if ((this.file.exists()) && (FileUtil.matchSHA1(this.file, this.sha1))) {
 			return false;

@@ -5,18 +5,35 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * @author Trxyy
+ */
 public class MinecraftRules {
+	/**
+	 * The excludes in a List
+	 */
 	private List<String> exclude = new ArrayList();
 
+	/**
+	 * The Constructor
+	 */
 	public MinecraftRules() {
 	}
 
+	/**
+	 * The Constructor
+	 * @param exclude The excludes
+	 */
 	public MinecraftRules(String[] exclude) {
 		if (exclude != null) {
 			Collections.addAll(this.exclude, exclude);
 		}
 	}
 
+	/**
+	 * The Constructor
+	 * @param rules The minecraft rules
+	 */
 	public MinecraftRules(MinecraftRules rules) {
 		Iterator var3 = rules.exclude.iterator();
 		while (var3.hasNext()) {
@@ -25,6 +42,9 @@ public class MinecraftRules {
 		}
 	}
 
+	/**
+	 * @return The excludes in a List
+	 */
 	public List<String> getExcludes() {
 		return this.exclude;
 	}
